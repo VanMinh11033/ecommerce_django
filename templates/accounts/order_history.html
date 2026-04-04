@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Đơn hàng của tôi - TechStore{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-4xl font-bold gradient-text mb-8" data-aos="fade-down">Đơn hàng của tôi</h1>
+    
+    {% if orders %}
+    <div class="space-y-6">
+        {% for order in orders %}
+        <div class="glass dark:glass-dark rounded-2xl p-6 hover:shadow-2xl transition-shadow" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|divisibleby:2|yesno:'0,100' }}">
+            <!-- Order Header -->
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-bold mb-1">Đơn hàng #{{ order.order_number }}</h3>
+                    <p class="text-sm text-gray-500">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-4 py-2 {% if order.status == 'delivered' %}bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300{% elif order.status == 'cancelled' %}bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300{% else %}bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300{% endif %} rounded-full text-sm font-medium">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Order Items Preview -->
+            <div class="mb-4">
+                <div class="flex items-center space-x-4 overflow-x-auto pb-2">
+                    {% for item in order.items.all|slice:":4" %}
+                    <div class="flex-shrink-0">
+                        {% if item.product and item.product.images.first %}
+                        <img src="{{ item.product.images.first.image.url }}" 
+                             alt="{{ item.product_name }}"
+                             class="w-20 h-20 object-cover rounded-lg">
+                        {% else %}
+                        <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-box text-2xl text-gray-400"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% if order.items.count > 4 %}
+                    <div class="flex-shrink-0 w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <span class="text-sm font-bold">+{{ order.items.count|add:"-4" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Order Info -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div>
+                    <p class="text-sm text-gray-500">Tổng tiền</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ order.total|floatformat:0 }}₫</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="{% url 'orders:detail' order.order_number %}" 
+                       class="px-6 py-3 btn-gradient text-white rounded-xl font-medium">
+                        Xem chi tiết
+                    </a>
+                    {% if order.can_cancel %}
+                    <form method="post" action="{% url 'orders:cancel' order.order_number %}" 
+                          onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+                        {% csrf_token %}
+                        <button type="submit" class="px-6 py-3 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-xl font-medium transition-colors">
+                            Hủy đơn
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20" data-aos="zoom-in">
+        <div class="glass dark:glass-dark rounded-2xl p-12 inline-block">
+            <i class="bi bi-bag-x text-6xl text-gray-400 mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">Chưa có đơn hàng nào</h3>
+            <p class="text-gray-500 mb-6">Bạn chưa đặt đơn hàng nào. Hãy khám phá sản phẩm của chúng tôi!</p>
+            <a href="{% url 'products:list' %}" class="inline-block px-8 py-3 btn-gradient text-white rounded-xl font-bold">
+                Mua sắm ngay
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Dashboard</h1>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card primary border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Tổng doanh thu</h6>
+                            <h3 class="mb-0">{{ total_revenue|floatformat:0 }}₫</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up"></i> Tuần: {{ week_revenue|floatformat:0 }}₫
+                            </small>
+                        </div>
+                        <div>
+                            <i class="bi bi-currency-dollar" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card stats-card success border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Đơn hàng</h6>
+                            <h3 class="mb-0">{{ total_orders }}</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up"></i> Hôm nay: {{ today_orders }}
+                            </small>
+                        </div>
+                        <div>
+                            <i class="bi bi-receipt" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card stats-card warning border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Khách hàng</h6>
+                            <h3 class="mb-0">{{ total_customers }}</h3>
+                        </div>
+                        <div>
+                            <i class="bi bi-people" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card stats-card danger border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Sản phẩm</h6>
+                            <h3 class="mb-0">{{ total_products }}</h3>
+                        </div>
+                        <div>
+                            <i class="bi bi-box-seam" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Doanh thu 30 ngày gần đây</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Trạng thái đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Orders and Top Products -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Đơn hàng gần đây</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td><strong>{{ order.order_number }}</strong></td>
+                                    <td>{{ order.customer_name }}</td>
+                                    <td><strong>{{ order.total|floatformat:0 }}₫</strong></td>
+                                    <td>
+                                        <span class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'shipping' %}bg-primary{% elif order.status == 'delivered' %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_panel:order_detail' order.order_number %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Sản phẩm bán chạy</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for product in top_products %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ product.name|truncatewords:8 }}</h6>
+                                <small class="text-muted">Đã bán: {{ product.sold_count }}</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold">{{ product.price|floatformat:0 }}₫</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Revenue Chart Data
+    const revenueData = JSON.parse('{{ revenue_data|escapejs }}');
+    const revenueLabels = revenueData.map(item => {
+        const date = new Date(item.date);
+        return date.getDate() + '/' + (date.getMonth() + 1);
+    });
+    const revenueValues = revenueData.map(item => item.revenue);
+    
+    // Revenue Line Chart
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: revenueLabels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: revenueValues,
+                borderColor: '#3c4b64',
+                backgroundColor: 'rgba(60, 75, 100, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y.toLocaleString('vi-VN') + '₫';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return (value/1000000).toFixed(0) + 'M';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Order Status Chart Data
+    const orderStatusData = JSON.parse('{{ order_status_stats|escapejs }}');
+    const statusLabels = orderStatusData.map(item => item.status);
+    const statusCounts = orderStatusData.map(item => item.count);
+    
+    new Chart(document.getElementById('orderStatusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusCounts,
+                backgroundColor: [
+                    '#3c4b64',
+                    '#2eb85c',
+                    '#f9b115',
+                    '#e55353',
+                    '#636f83',
+                    '#321fdb'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

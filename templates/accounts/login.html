@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Đăng nhập - TechStore{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full" data-aos="zoom-in">
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="bi bi-cpu text-white text-4xl"></i>
+            </div>
+            <h2 class="text-4xl font-bold gradient-text mb-2">Chào mừng trở lại!</h2>
+            <p class="text-gray-600 dark:text-gray-400">Đăng nhập để tiếp tục mua sắm</p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="glass dark:glass-dark rounded-2xl p-8 shadow-2xl">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Tên đăng nhập</label>
+                    <div class="relative">
+                        <i class="bi bi-person absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" 
+                               name="username" 
+                               required
+                               class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-blue-500 transition-colors"
+                               placeholder="Nhập tên đăng nhập">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Mật khẩu</label>
+                    <div class="relative">
+                        <i class="bi bi-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" 
+                               name="password" 
+                               required
+                               class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-blue-500 transition-colors"
+                               placeholder="Nhập mật khẩu">
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="mr-2 w-4 h-4 rounded">
+                        <span class="text-sm">Ghi nhớ đăng nhập</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-500 hover:text-blue-600">Quên mật khẩu?</a>
+                </div>
+                
+                <button type="submit" 
+                        class="w-full px-6 py-4 btn-gradient text-white rounded-xl font-bold text-lg">
+                    Đăng nhập
+                    <i class="bi bi-arrow-right ml-2"></i>
+                </button>
+                
+                <div class="text-center text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Chưa có tài khoản?</span>
+                    <a href="{% url 'accounts:register' %}" class="text-blue-500 hover:text-blue-600 font-medium ml-1">
+                        Đăng ký ngay
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Social Login (Optional) -->
+            <div class="mt-6 pt-6 border-t border-gray-300 dark:border-gray-700">
+                <p class="text-center text-sm text-gray-500 mb-4">Hoặc đăng nhập với</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 transition-colors flex items-center justify-center">
+                        <i class="bi bi-google text-xl mr-2"></i>
+                        Google
+                    </button>
+                    <button class="px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 transition-colors flex items-center justify-center">
+                        <i class="bi bi-facebook text-xl mr-2"></i>
+                        Facebook
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

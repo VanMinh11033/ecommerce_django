@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Sản phẩm - TechStore{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8" data-aos="fade-down">
+        <h1 class="text-4xl font-bold gradient-text mb-2">Khám phá sản phẩm</h1>
+        <p class="text-gray-600 dark:text-gray-400">Tìm kiếm công nghệ mơ ước của bạn</p>
+    </div>
+    
+    <div class="grid lg:grid-cols-4 gap-8">
+        <!-- Sidebar Filters -->
+        <div class="lg:col-span-1" data-aos="fade-right">
+            <!-- Categories Card -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="bi bi-grid text-blue-500 mr-2"></i>
+                    Danh mục
+                </h3>
+                <div class="space-y-2">
+                    <a href="{% url 'products:list' %}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 hover:text-white transition-all transform hover:translate-x-1">
+                        Tất cả sản phẩm
+                    </a>
+                    {% for category in categories %}
+                    <a href="?category={{ category.slug }}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-500 hover:text-white transition-all transform hover:translate-x-1">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Brands Card -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="bi bi-tag text-purple-500 mr-2"></i>
+                    Thương hiệu
+                </h3>
+                <div class="space-y-2">
+                    {% for brand in brands %}
+                    <a href="?brand={{ brand.slug }}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white transition-all transform hover:translate-x-1">
+                        {{ brand.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Price Filter Card -->
+            <div class="glass dark:glass-dark rounded-2xl p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="bi bi-currency-dollar text-green-500 mr-2"></i>
+                    Khoảng giá
+                </h3>
+                <form method="get" class="space-y-4">
+                    <div>
+                        <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 block">Từ</label>
+                        <input type="number" 
+                               name="min_price" 
+                               placeholder="0đ"
+                               class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-blue-500 outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 block">Đến</label>
+                        <input type="number" 
+                               name="max_price" 
+                               placeholder="99.000.000đ"
+                               class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-blue-500 outline-none transition-colors">
+                    </div>
+                    <button type="submit" 
+                            class="w-full px-4 py-3 btn-gradient text-white rounded-lg font-medium">
+                        Áp dụng
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="lg:col-span-3">
+            <!-- Sort & Count -->
+            <div class="flex justify-between items-center mb-6 glass dark:glass-dark rounded-2xl p-4" data-aos="fade-left">
+                <div class="flex items-center space-x-2">
+                    <i class="bi bi-funnel text-blue-500"></i>
+                    <span class="font-medium">{{ page_obj.paginator.count }} sản phẩm</span>
+                </div>
+                <select onchange="window.location.href='?sort=' + this.value" 
+                        class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none cursor-pointer">
+                    <option value="-created_at">Mới nhất</option>
+                    <option value="price_asc">Giá tăng dần</option>
+                    <option value="price_desc">Giá giảm dần</option>
+                    <option value="popular">Phổ biến</option>
+                    <option value="name">Tên A-Z</option>
+                </select>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {% for product in page_obj %}
+                <div class="product-card glass dark:glass-dark rounded-2xl overflow-hidden group" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|divisibleby:3|yesno:'0,100,200' }}">
+                    <div class="relative overflow-hidden aspect-square">
+                        <!-- Badge -->
+                        {% if product.discount_percentage > 0 %}
+                        <div class="absolute top-4 right-4 z-10 px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-sm font-bold rounded-full shadow-lg">
+                            -{{ product.discount_percentage }}%
+                        </div>
+                        {% endif %}
+                        
+                        {% if product.is_new %}
+                        <div class="absolute top-4 left-4 z-10 px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-full">
+                            MỚI
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Image -->
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" 
+                             alt="{{ product.name }}"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+                            <i class="bi bi-image text-6xl text-gray-400"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Quick View Overlay -->
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <a href="{% url 'products:detail' product.slug %}" 
+                               class="px-6 py-3 bg-white text-gray-900 rounded-full font-medium transform scale-90 group-hover:scale-100 transition-transform">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <!-- Brand -->
+                        {% if product.brand %}
+                        <p class="text-sm text-blue-500 font-medium mb-2">{{ product.brand.name }}</p>
+                        {% endif %}
+                        
+                        <!-- Title -->
+                        <h3 class="font-bold text-lg mb-3 line-clamp-2 h-14 group-hover:text-blue-500 transition-colors">
+                            <a href="{% url 'products:detail' product.slug %}">{{ product.name }}</a>
+                        </h3>
+                        
+                        <!-- Rating & Sold -->
+                        <div class="flex items-center justify-between mb-4 text-sm">
+                            <div class="flex items-center">
+                                <i class="bi bi-star-fill text-yellow-400 mr-1"></i>
+                                <span class="font-medium">{{ product.rating_average|default:"0.0" }}</span>
+                                <span class="text-gray-500 ml-1">({{ product.review_count }})</span>
+                            </div>
+                            <span class="text-gray-500">Đã bán {{ product.sold_count }}</span>
+                        </div>
+                        
+                        <!-- Price -->
+                        <div class="mb-4">
+                            {% if product.compare_price %}
+                            <p class="text-sm text-gray-500 line-through mb-1">{{ product.compare_price|floatformat:0 }}₫</p>
+                            {% endif %}
+                            <p class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                {{ product.price|floatformat:0 }}₫
+                            </p>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="flex gap-2">
+                            <a href="{% url 'products:detail' product.slug %}" 
+                               class="flex-1 px-4 py-2.5 btn-gradient text-white text-center rounded-lg font-medium">
+                                Mua ngay
+                            </a>
+                            <button class="w-12 h-11 flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-red-500 hover:text-red-500 transition-colors">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-20">
+                    <i class="bi bi-inbox text-6xl text-gray-400 mb-4"></i>
+                    <p class="text-xl text-gray-500">Không tìm thấy sản phẩm nào</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-12 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" 
+                       class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <span class="w-10 h-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 text-white font-medium">
+                        {{ num }}
+                    </span>
+                    {% else %}
+                    <a href="?page={{ num }}" 
+                       class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" 
+                       class="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

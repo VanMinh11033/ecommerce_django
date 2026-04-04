@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Thông tin tài khoản - TechStore{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-4xl font-bold gradient-text mb-8" data-aos="fade-down">Thông tin tài khoản</h1>
+    
+    <div class="grid md:grid-cols-3 gap-6">
+        <!-- Sidebar Menu -->
+        <div class="md:col-span-1" data-aos="fade-right">
+            <div class="glass dark:glass-dark rounded-2xl p-6">
+                <div class="flex flex-col items-center mb-6">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-24 h-24 rounded-full mb-4">
+                    {% else %}
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold mb-4">
+                        {{ user.username.0|upper }}
+                    </div>
+                    {% endif %}
+                    <h3 class="font-bold text-lg">{{ user.get_full_name|default:user.username }}</h3>
+                    <p class="text-sm text-gray-500">{{ user.email }}</p>
+                </div>
+                
+                <nav class="space-y-2">
+                    <a href="{% url 'accounts:profile' %}" class="flex items-center px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg">
+                        <i class="bi bi-person mr-3"></i>
+                        Thông tin cá nhân
+                    </a>
+                    <a href="{% url 'accounts:order_history' %}" class="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                        <i class="bi bi-bag-check mr-3"></i>
+                        Đơn hàng của tôi
+                    </a>
+                    <a href="{% url 'products:wishlist' %}" class="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                        <i class="bi bi-heart mr-3"></i>
+                        Sản phẩm yêu thích
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="flex items-center px-4 py-3 hover:bg-red-500 hover:text-white rounded-lg transition-colors">
+                        <i class="bi bi-box-arrow-right mr-3"></i>
+                        Đăng xuất
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Profile Form -->
+        <div class="md:col-span-2" data-aos="fade-left">
+            <form method="post" enctype="multipart/form-data" class="glass dark:glass-dark rounded-2xl p-6">
+                {% csrf_token %}
+                
+                <h2 class="text-2xl font-bold mb-6">Cập nhật thông tin</h2>
+                
+                <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2 font-medium">Họ</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div>
+                            <label class="block mb-2 font-medium">Tên</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium">Email</label>
+                        {{ form.email }}
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium">Số điện thoại</label>
+                        {{ form.phone }}
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium">Ngày sinh</label>
+                        {{ form.date_of_birth }}
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium">Địa chỉ</label>
+                        {{ form.address }}
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block mb-2 font-medium">Phường/Xã</label>
+                            {{ form.ward }}
+                        </div>
+                        <div>
+                            <label class="block mb-2 font-medium">Quận/Huyện</label>
+                            {{ form.district }}
+                        </div>
+                        <div>
+                            <label class="block mb-2 font-medium">Tỉnh/TP</label>
+                            {{ form.city }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block mb-2 font-medium">Avatar</label>
+                        {{ form.avatar }}
+                    </div>
+                </div>
+                
+                <button type="submit" class="mt-6 w-full px-6 py-3 btn-gradient text-white rounded-xl font-bold">
+                    <i class="bi bi-check-circle mr-2"></i>
+                    Cập nhật thông tin
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    input, textarea, select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: white;
+        border: 2px solid #e5e7eb;
+        outline: none;
+        transition: all 0.3s;
+    }
+    
+    .dark input, .dark textarea, .dark select {
+        background: #1e293b;
+        border-color: #475569;
+        color: white;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+        border-color: #3b82f6;
+    }
+    
+    textarea {
+        min-height: 100px;
+    }
+</style>
+{% endblock %}

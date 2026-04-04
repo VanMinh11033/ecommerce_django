@@ -1,0 +1,68 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Xác nhận xóa khách hàng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle"></i>
+                        Bạn có chắc chắn muốn xóa khách hàng này?
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>Thông tin khách hàng:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Username:</strong> {{ customer.username }}</li>
+                            <li><strong>Họ tên:</strong> {{ customer.get_full_name|default:"--" }}</li>
+                            <li><strong>Email:</strong> {{ customer.email }}</li>
+                            <li><strong>Số điện thoại:</strong> {{ customer.phone|default:"--" }}</li>
+                            <li><strong>Ngày tham gia:</strong> {{ customer.date_joined|date:"d/m/Y" }}</li>
+                        </ul>
+                    </div>
+                    
+                    {% if customer.orders.exists %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i>
+                        <strong>Không thể xóa!</strong> Khách hàng này đã có <strong>{{ customer.orders.count }}</strong> đơn hàng.
+                        <br><br>
+                        Không thể xóa khách hàng đã từng mua hàng để giữ tính toàn vẹn dữ liệu.
+                    </div>
+                    
+                    <a href="{% url 'admin_panel:customers_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-check-circle"></i>
+                        Khách hàng này chưa có đơn hàng nào. Có thể xóa an toàn.
+                    </div>
+                    
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác!
+                    </div>
+                    
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Xác nhận xóa
+                        </button>
+                        <a href="{% url 'admin_panel:customers_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x"></i> Hủy
+                        </a>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

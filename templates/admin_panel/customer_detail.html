@@ -1,0 +1,153 @@
+Customer detail · HTML
+Copy
+
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Chi tiết khách hàng</h1>
+        <a href="{% url 'admin_panel:customers_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+    
+    <div class="row">
+        <!-- Customer Info -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-body text-center">
+                    {% if customer.avatar %}
+                    <img src="{{ customer.avatar.url }}" alt="{{ customer.username }}" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ customer.username.0|upper }}
+                    </div>
+                    {% endif %}
+                    
+                    <h4>{{ customer.get_full_name|default:customer.username }}</h4>
+                    <p class="text-muted">@{{ customer.username }}</p>
+                    
+                    <span class="badge {% if customer.is_active %}bg-success{% else %}bg-danger{% endif %} mb-3">
+                        {% if customer.is_active %}Hoạt động{% else %}Đã khóa{% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thông tin liên hệ</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <i class="bi bi-envelope text-primary me-2"></i>
+                        {{ customer.email }}
+                    </p>
+                    {% if customer.phone %}
+                    <p class="mb-2">
+                        <i class="bi bi-phone text-success me-2"></i>
+                        {{ customer.phone }}
+                    </p>
+                    {% endif %}
+                    {% if customer.address %}
+                    <p class="mb-0">
+                        <i class="bi bi-geo-alt text-danger me-2"></i>
+                        {{ customer.address }}, {{ customer.ward }}, {{ customer.district }}, {{ customer.city }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thống kê</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Số đơn hàng:</span>
+                        <strong>{{ orders.count }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tổng chi tiêu:</span>
+                        <strong class="text-primary">{{ total_spent|floatformat:0 }}₫</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Ngày tham gia:</span>
+                        <strong>{{ customer.date_joined|date:"d/m/Y" }}</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <a href="{% url 'admin_panel:customer_edit' customer.id %}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-pencil"></i> Chỉnh sửa
+                    </a>
+                    <a href="{% url 'admin_panel:customer_toggle_active' customer.id %}" 
+                       class="btn btn-warning w-100 mb-2"
+                       onclick="return confirm('Bạn có chắc?')">
+                        <i class="bi bi-{% if customer.is_active %}lock{% else %}unlock{% endif %}"></i>
+                        {% if customer.is_active %}Khóa tài khoản{% else %}Mở khóa{% endif %}
+                    </a>
+                    <a href="{% url 'admin_panel:customer_delete' customer.id %}" class="btn btn-danger w-100">
+                        <i class="bi bi-trash"></i> Xóa khách hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order History -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Lịch sử đơn hàng</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td><strong>{{ order.order_number }}</strong></td>
+                                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                                    <td><strong>{{ order.total|floatformat:0 }}₫</strong></td>
+                                    <td>
+                                        <span class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'confirmed' %}bg-info{% elif order.status == 'shipping' %}bg-primary{% elif order.status == 'delivered' %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_panel:order_detail' order.order_number %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i> Xem
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">Khách hàng chưa có đơn hàng nào</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

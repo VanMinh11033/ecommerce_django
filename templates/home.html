@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section với Gradient Animation -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 opacity-90"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBoNnYzMGgtNnpNMjQgMzBoNnYzMGgtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="text-white" data-aos="fade-right">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    Công nghệ
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-pink-400">
+                        Thay đổi cuộc sống
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-100 leading-relaxed">
+                    Khám phá những sản phẩm công nghệ mới nhất với giá tốt nhất. 
+                    Trải nghiệm mua sắm đỉnh cao chỉ có tại TechStore.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{% url 'products:list' %}" 
+                       class="px-8 py-4 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transform hover:scale-105 transition-all shadow-2xl">
+                        Khám phá ngay
+                        <i class="bi bi-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#features" 
+                       class="px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-gray-900 transform hover:scale-105 transition-all">
+                        Tìm hiểu thêm
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-8 mt-12">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-4xl font-bold">10K+</div>
+                        <div class="text-gray-200">Sản phẩm</div>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-4xl font-bold">50K+</div>
+                        <div class="text-gray-200">Khách hàng</div>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-4xl font-bold">4.9⭐</div>
+                        <div class="text-gray-200">Đánh giá</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Image với 3D Effect -->
+            <div class="relative" data-aos="fade-left">
+                <div class="relative z-10">
+                    <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800" 
+                         alt="Tech Products" 
+                         class="rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500">
+                </div>
+                <!-- Floating Elements -->
+                <div class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-400 rounded-full opacity-20 blur-3xl animate-float"></div>
+                <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-pink-400 rounded-full opacity-20 blur-3xl animate-float" style="animation-delay: 1s;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white animate-bounce">
+        <i class="bi bi-chevron-down text-3xl"></i>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">Tại sao chọn TechStore?</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Chúng tôi mang đến trải nghiệm mua sắm tuyệt vời nhất</p>
+        </div>
+        
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="group p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="bi bi-truck text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Giao hàng nhanh</h3>
+                <p class="text-gray-600 dark:text-gray-400">Miễn phí vận chuyển cho đơn hàng trên 500k. Giao hàng trong 24h.</p>
+            </div>
+            
+            <div class="group p-8 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-800 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="bi bi-shield-check text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Bảo hành chính hãng</h3>
+                <p class="text-gray-600 dark:text-gray-400">100% sản phẩm chính hãng. Bảo hành lên đến 24 tháng.</p>
+            </div>
+            
+            <div class="group p-8 rounded-2xl bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-gray-800 dark:to-gray-800 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="bi bi-arrow-clockwise text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Đổi trả dễ dàng</h3>
+                <p class="text-gray-600 dark:text-gray-400">Đổi trả trong 7 ngày nếu sản phẩm có lỗi hoặc không hài lòng.</p>
+            </div>
+            
+            <div class="group p-8 rounded-2xl bg-gradient-to-br from-pink-50 to-red-50 dark:from-gray-800 dark:to-gray-800 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="bi bi-headset text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Hỗ trợ 24/7</h3>
+                <p class="text-gray-600 dark:text-gray-400">Đội ngũ tư vấn chuyên nghiệp, nhiệt tình 24/7.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-20 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">Danh mục sản phẩm</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Khám phá các sản phẩm công nghệ hàng đầu</p>
+        </div>
+        
+        <div class="grid md:grid-cols-4 gap-6">
+            <a href="{% url 'products:list' %}?category=laptop" 
+               class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-8 h-64 flex flex-col justify-end hover:scale-105 transition-transform duration-300"
+               data-aos="zoom-in" data-aos-delay="100">
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <div class="absolute top-8 right-8 text-6xl text-white opacity-20 group-hover:scale-125 transition-transform">
+                    <i class="bi bi-laptop"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white relative z-10 mb-2">Laptop</h3>
+                <p class="text-blue-100 relative z-10">Laptop cao cấp, gaming, văn phòng</p>
+            </a>
+            
+            <a href="{% url 'products:list' %}?category=dien-thoai" 
+               class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 p-8 h-64 flex flex-col justify-end hover:scale-105 transition-transform duration-300"
+               data-aos="zoom-in" data-aos-delay="200">
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <div class="absolute top-8 right-8 text-6xl text-white opacity-20 group-hover:scale-125 transition-transform">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white relative z-10 mb-2">Điện thoại</h3>
+                <p class="text-purple-100 relative z-10">Smartphone flagship mới nhất</p>
+            </a>
+            
+            <a href="{% url 'products:list' %}?category=tablet" 
+               class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 p-8 h-64 flex flex-col justify-end hover:scale-105 transition-transform duration-300"
+               data-aos="zoom-in" data-aos-delay="300">
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <div class="absolute top-8 right-8 text-6xl text-white opacity-20 group-hover:scale-125 transition-transform">
+                    <i class="bi bi-tablet"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white relative z-10 mb-2">Tablet</h3>
+                <p class="text-pink-100 relative z-10">iPad, Android tablet cao cấp</p>
+            </a>
+            
+            <a href="{% url 'products:list' %}?category=phu-kien" 
+               class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-500 to-green-700 p-8 h-64 flex flex-col justify-end hover:scale-105 transition-transform duration-300"
+               data-aos="zoom-in" data-aos-delay="400">
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <div class="absolute top-8 right-8 text-6xl text-white opacity-20 group-hover:scale-125 transition-transform">
+                    <i class="bi bi-headphones"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-white relative z-10 mb-2">Phụ kiện</h3>
+                <p class="text-green-100 relative z-10">Tai nghe, chuột, bàn phím...</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-20 bg-white dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">🔥 Sản phẩm nổi bật</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Khám phá những sản phẩm công nghệ được yêu thích nhất</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for product in featured_products %}
+            <div class="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <!-- Product Image -->
+                <div class="relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-700">
+                    {% if product.images.first %}
+                    <img src="{{ product.images.first.image.url }}" 
+                         alt="{{ product.name }}"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600">
+                        <i class="bi bi-image text-gray-400 text-6xl"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Badges -->
+                    <div class="absolute top-4 left-4 flex flex-col gap-2">
+                        {% if product.is_new %}
+                        <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">MỚI</span>
+                        {% endif %}
+                        {% if product.discount_percentage > 0 %}
+                        <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-{{ product.discount_percentage }}%</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Quick View -->
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <a href="{% url 'products:detail' product.slug %}" 
+                           class="px-6 py-3 bg-white text-gray-900 font-bold rounded-full transform scale-90 group-hover:scale-100 transition-transform">
+                            Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="p-6">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ product.category.name }}</div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 min-h-[56px]">
+                        {{ product.name }}
+                    </h3>
+                    
+                    <!-- Rating -->
+                    {% if product.rating_average %}
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="flex text-yellow-500">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= product.rating_average %}
+                                <i class="bi bi-star-fill text-sm"></i>
+                                {% else %}
+                                <i class="bi bi-star text-sm"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">({{ product.review_count }})</span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Price -->
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-2xl font-bold gradient-text">
+                            {{ product.price|floatformat:0 }}₫
+                        </span>
+                        {% if product.compare_price %}
+                        <span class="text-sm text-gray-400 line-through">
+                            {{ product.compare_price|floatformat:0 }}₫
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    {% if product.stock > 0 %}
+                    <div class="text-sm text-green-600 dark:text-green-400 mb-4">
+                        <i class="bi bi-check-circle"></i> Còn hàng
+                    </div>
+                    {% else %}
+                    <div class="text-sm text-red-600 dark:text-red-400 mb-4">
+                        <i class="bi bi-x-circle"></i> Hết hàng
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Add to Cart Button -->
+                    <a href="{% url 'products:detail' product.slug %}" 
+                       class="block w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center font-bold rounded-full hover:shadow-lg transform hover:scale-105 transition-all">
+                        <i class="bi bi-cart-plus mr-2"></i>Mua ngay
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="bi bi-box-seam text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                <p class="text-xl text-gray-500 dark:text-gray-400">Chưa có sản phẩm nào</p>
+                <a href="{% url 'admin_panel:products_list' %}" class="inline-block mt-4 px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                    Thêm sản phẩm
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- View All Button -->
+        {% if featured_products %}
+        <div class="text-center mt-12" data-aos="fade-up">
+            <a href="{% url 'products:list' %}" 
+               class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-full hover:shadow-xl transform hover:scale-105 transition-all">
+                Xem tất cả sản phẩm
+                <i class="bi bi-arrow-right ml-2"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDMwaDZ2MzBoLTZ6TTI0IDMwaDZ2MzBoLTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50"></div>
+    
+    <div class="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="zoom-in">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+            Sẵn sàng trải nghiệm công nghệ mới?
+        </h2>
+        <p class="text-xl text-white mb-8 opacity-90">
+            Đăng ký ngay để nhận ưu đãi đặc biệt và cập nhật sản phẩm mới nhất
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <input type="email" 
+                   placeholder="Nhập email của bạn" 
+                   class="px-6 py-4 rounded-full w-full sm:w-96 text-gray-900 outline-none focus:ring-4 focus:ring-white/50">
+            <button class="px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-gray-100 transform hover:scale-105 transition-all shadow-xl">
+                Đăng ký ngay
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}

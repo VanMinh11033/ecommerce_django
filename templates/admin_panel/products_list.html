@@ -1,0 +1,135 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Quản lý sản phẩm</h1>
+        <a href="{% url 'admin_panel:product_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+        </a>
+    </div>
+    
+    <!-- Search & Filter -->
+    <div class="card mb-4 border-0 shadow">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="category" class="form-select">
+                        <option value="">Tất cả danh mục</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Products Table -->
+    <div class="card border-0 shadow">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in page_obj %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>
+                                {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                                {% else %}
+                                <div style="width: 50px; height: 50px; background: #e9ecef; border-radius: 8px;"></div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ product.name|truncatewords:8 }}</strong>
+                                <br><small class="text-muted">SKU: {{ product.sku }}</small>
+                            </td>
+                            <td>{{ product.category.name }}</td>
+                            <td><strong>{{ product.price|floatformat:0 }}₫</strong></td>
+                            <td>
+                                <span class="badge {% if product.stock > 10 %}bg-success{% elif product.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {{ product.stock }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if product.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if product.is_active %}Hoạt động{% else %}Ẩn{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'admin_panel:product_detail' product.id %}" class="btn btn-info" title="Xem">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'admin_panel:product_edit' product.id %}" class="btn btn-primary" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'admin_panel:product_delete' product.id %}" class="btn btn-danger" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">Không tìm thấy sản phẩm nào</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Trước</a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sau</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

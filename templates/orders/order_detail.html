@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Chi tiết đơn hàng #{{ order.order_number }} - TechStore{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8" data-aos="fade-down">
+        <h1 class="text-4xl font-bold gradient-text mb-2">Chi tiết đơn hàng</h1>
+        <p class="text-gray-600 dark:text-gray-400">Mã đơn hàng: <span class="font-bold">#{{ order.order_number }}</span></p>
+    </div>
+    
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Order Items -->
+        <div class="lg:col-span-2" data-aos="fade-right">
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-6">Sản phẩm đã đặt</h2>
+                <div class="space-y-4">
+                    {% for item in order_items %}
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        {% if item.product and item.product.images.first %}
+                        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product_name }}"
+                             class="w-20 h-20 object-cover rounded-lg">
+                        {% else %}
+                        <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-box text-2xl text-gray-400"></i>
+                        </div>
+                        {% endif %}
+                        <div class="flex-1">
+                            <h3 class="font-bold">{{ item.product_name }}</h3>
+                            <p class="text-sm text-gray-500">SKU: {{ item.product_sku }}</p>
+                            <p class="text-sm">Số lượng: <span class="font-medium">{{ item.quantity }}</span></p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500 line-through">{{ item.price|floatformat:0 }}₫</p>
+                            <p class="text-xl font-bold text-blue-600">{{ item.total|floatformat:0 }}₫</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Status History -->
+            {% if status_history %}
+            <div class="glass dark:glass-dark rounded-2xl p-6">
+                <h2 class="text-2xl font-bold mb-6">Lịch sử đơn hàng</h2>
+                <div class="space-y-4">
+                    {% for history in status_history %}
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="bi bi-check text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold">{{ history.get_status_display }}</p>
+                            <p class="text-sm text-gray-500">{{ history.created_at|date:"d/m/Y H:i" }}</p>
+                            {% if history.note %}
+                            <p class="text-sm mt-1">{{ history.note }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Order Info Sidebar -->
+        <div class="lg:col-span-1" data-aos="fade-left">
+            <!-- Status Card -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="font-bold mb-4">Trạng thái đơn hàng</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>Đơn hàng:</span>
+                        <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Thanh toán:</span>
+                        <span class="px-3 py-1 {% if order.is_paid %}bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300{% else %}bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300{% endif %} rounded-full text-sm font-medium">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Customer Info -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="font-bold mb-4 flex items-center">
+                    <i class="bi bi-person text-blue-500 mr-2"></i>
+                    Thông tin khách hàng
+                </h3>
+                <div class="space-y-2 text-sm">
+                    <p><span class="text-gray-500">Họ tên:</span> <span class="font-medium">{{ order.customer_name }}</span></p>
+                    <p><span class="text-gray-500">Email:</span> <span class="font-medium">{{ order.customer_email }}</span></p>
+                    <p><span class="text-gray-500">SĐT:</span> <span class="font-medium">{{ order.customer_phone }}</span></p>
+                </div>
+            </div>
+            
+            <!-- Shipping Address -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="font-bold mb-4 flex items-center">
+                    <i class="bi bi-geo-alt text-green-500 mr-2"></i>
+                    Địa chỉ giao hàng
+                </h3>
+                <p class="text-sm">{{ order.full_shipping_address }}</p>
+                {% if order.shipping_note %}
+                <p class="text-sm text-gray-500 mt-2">Ghi chú: {{ order.shipping_note }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Payment Info -->
+            <div class="glass dark:glass-dark rounded-2xl p-6 mb-6">
+                <h3 class="font-bold mb-4 flex items-center">
+                    <i class="bi bi-credit-card text-purple-500 mr-2"></i>
+                    Thanh toán
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span>Tạm tính:</span>
+                        <span class="font-bold">{{ order.subtotal|floatformat:0 }}₫</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Phí vận chuyển:</span>
+                        <span class="font-bold">{{ order.shipping_fee|floatformat:0 }}₫</span>
+                    </div>
+                    {% if order.discount_amount > 0 %}
+                    <div class="flex justify-between text-sm text-green-600">
+                        <span>Giảm giá:</span>
+                        <span class="font-bold">-{{ order.discount_amount|floatformat:0 }}₫</span>
+                    </div>
+                    {% endif %}
+                    <hr class="border-gray-300 dark:border-gray-700">
+                    <div class="flex justify-between text-lg">
+                        <span class="font-bold">Tổng cộng:</span>
+                        <span class="font-bold text-blue-600">{{ order.total|floatformat:0 }}₫</span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Phương thức: {{ order.get_payment_method_display }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            {% if order.can_cancel %}
+            <form method="post" action="{% url 'orders:cancel' order.order_number %}" onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+                {% csrf_token %}
+                <button type="submit" class="w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors">
+                    <i class="bi bi-x-circle mr-2"></i>
+                    Hủy đơn hàng
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

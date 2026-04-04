@@ -1,0 +1,88 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">{{ action }} danh mục</h1>
+        <a href="{% url 'admin_panel:categories_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tên danh mục *</label>
+                            {{ form.name }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Slug *</label>
+                            {{ form.slug }}
+                            <small class="form-text text-muted">URL thân thiện (vd: laptop, dien-thoai)</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Danh mục cha</label>
+                            {{ form.parent }}
+                            <small class="form-text text-muted">Để trống nếu là danh mục gốc</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả</label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Hình ảnh</label>
+                            {{ form.image }}
+                            {% if category and category.image %}
+                            <div class="mt-2">
+                                <img src="{{ category.image.url }}" class="img-thumbnail" style="max-width: 200px;" alt="">
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            {{ form.is_active }}
+                            <label class="form-check-label">Hiển thị danh mục</label>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> {{ action }} danh mục
+                            </button>
+                            <a href="{% url 'admin_panel:categories_list' %}" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-generate slug from name
+document.querySelector('input[name="name"]').addEventListener('input', function(e) {
+    const name = e.target.value;
+    const slug = name.toLowerCase()
+        .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
+        .replace(/[èéẹẻẽêềếệểễ]/g, 'e')
+        .replace(/[ìíịỉĩ]/g, 'i')
+        .replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o')
+        .replace(/[ùúụủũưừứựửữ]/g, 'u')
+        .replace(/[ỳýỵỷỹ]/g, 'y')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    document.querySelector('input[name="slug"]').value = slug;
+});
+</script>
+{% endblock %}

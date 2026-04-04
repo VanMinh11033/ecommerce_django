@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TechStore - Công nghệ cao cấp{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'gradient': 'gradient 3s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s;
+        }
+        
+        .btn-gradient:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.5);
+        }
+        
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .navbar-glass {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #0ea5e9, 0 0 10px #0ea5e9; }
+            100% { box-shadow: 0 0 10px #0ea5e9, 0 0 20px #0ea5e9, 0 0 30px #0ea5e9; }
+        }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    
+    <!-- Navbar -->
+    <nav class="navbar-glass fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="bi bi-cpu text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold gradient-text hidden sm:block">TechStore</span>
+                </a>
+                
+                <div class="hidden md:flex flex-1 max-w-lg mx-8">
+                    <form action="{% url 'products:list' %}" method="get" class="w-full">
+                        <div class="relative">
+                            <input type="text" name="search" placeholder="Tìm kiếm sản phẩm..." 
+                                   class="w-full px-5 py-2.5 pl-12 rounded-full bg-white dark:bg-gray-800 border-2 border-transparent focus:border-blue-500 outline-none">
+                            <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <i class="bi bi-moon-stars dark:hidden text-xl"></i>
+                        <i class="bi bi-sun hidden dark:inline text-xl text-yellow-400"></i>
+                    </button>
+                    
+                    <a href="{% url 'cart:view' %}" class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <i class="bi bi-cart3 text-xl"></i>
+                        {% if cart_items_count > 0 %}
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                            {{ cart_items_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                                {{ user.username.0|upper }}
+                            </div>
+                        </button>
+                        
+                        <div class="absolute right-0 mt-2 w-56 glass-dark rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            <div class="p-4 border-b border-gray-700">
+                                <p class="font-semibold">{{ user.get_full_name|default:user.username }}</p>
+                                <p class="text-sm text-gray-400">{{ user.email }}</p>
+                            </div>
+                            <div class="py-2">
+                                <a href="{% url 'accounts:profile' %}" class="flex items-center px-4 py-2 hover:bg-gray-700">
+                                    <i class="bi bi-person mr-3"></i> Tài khoản
+                                </a>
+                                <a href="{% url 'accounts:order_history' %}" class="flex items-center px-4 py-2 hover:bg-gray-700">
+                                    <i class="bi bi-bag-check mr-3"></i> Đơn hàng
+                                </a>
+                                {% if user.is_staff %}
+                                <a href="{% url 'admin_panel:dashboard' %}" class="flex items-center px-4 py-2 hover:bg-gray-700 text-blue-400">
+                                    <i class="bi bi-speedometer2 mr-3"></i> Quản trị
+                                </a>
+                                {% endif %}
+                                <hr class="my-2 border-gray-700">
+                                <a href="{% url 'accounts:logout' %}" class="flex items-center px-4 py-2 hover:bg-gray-700 text-red-400">
+                                    <i class="bi bi-box-arrow-right mr-3"></i> Đăng xuất
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="px-4 py-2 text-sm font-medium hover:text-blue-500">Đăng nhập</a>
+                    <a href="{% url 'accounts:register' %}" class="px-5 py-2 btn-gradient text-white text-sm font-medium rounded-full">Đăng ký</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="glass-dark rounded-lg shadow-2xl p-4 max-w-sm {% if message.tags == 'success' %}border-l-4 border-green-500{% elif message.tags == 'error' %}border-l-4 border-red-500{% endif %}">
+            <p class="text-sm font-medium">{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <main class="pt-16 min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer class="bg-gray-900 text-gray-300 mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-cpu text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold gradient-text">TechStore</span>
+                    </div>
+                    <p class="text-sm text-gray-400">Cửa hàng công nghệ hàng đầu Việt Nam</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-white mb-4">Liên kết</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{% url 'products:list' %}" class="hover:text-blue-400">Sản phẩm</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Giới thiệu</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-white mb-4">Hỗ trợ</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-blue-400">Bảo hành</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Đổi trả</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-white mb-4">Liên hệ</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center"><i class="bi bi-telephone text-blue-400 mr-2"></i>0898676403</li>
+                        <li class="flex items-center"><i class="bi bi-envelope text-blue-400 mr-2"></i> support@techstore.vn</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2024 TechStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+        
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+        
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+<!--python manage.py runserver -->

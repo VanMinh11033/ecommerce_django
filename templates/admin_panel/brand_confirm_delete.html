@@ -1,0 +1,65 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Xác nhận xóa thương hiệu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle"></i>
+                        Bạn có chắc chắn muốn xóa thương hiệu này?
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6>Thông tin thương hiệu:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Tên:</strong> {{ brand.name }}</li>
+                            <li><strong>Slug:</strong> {{ brand.slug }}</li>
+                            {% if brand.logo %}
+                            <li><strong>Logo:</strong><br>
+                                <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" style="max-width: 150px;" class="img-thumbnail mt-2">
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    {% if brand.products.exists %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i>
+                        <strong>Không thể xóa!</strong> Thương hiệu này đang có <strong>{{ brand.products.count }}</strong> sản phẩm.
+                        <br><br>
+                        Vui lòng xóa hoặc chuyển các sản phẩm sang thương hiệu khác trước.
+                    </div>
+                    
+                    <a href="{% url 'admin_panel:brands_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-check-circle"></i>
+                        Thương hiệu này không có sản phẩm nào. Có thể xóa an toàn.
+                    </div>
+                    
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Xác nhận xóa
+                        </button>
+                        <a href="{% url 'admin_panel:brands_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x"></i> Hủy
+                        </a>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

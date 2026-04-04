@@ -1,0 +1,136 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Báo cáo doanh thu</h1>
+        <a href="{% url 'admin_panel:reports_export' %}" class="btn btn-success">
+            <i class="bi bi-download"></i> Export CSV
+        </a>
+    </div>
+    
+    <!-- Date Filter -->
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label">Từ ngày:</label>
+                    <input type="date" name="start_date" value="{{ start_date }}" class="form-control">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Đến ngày:</label>
+                    <input type="date" name="end_date" value="{{ end_date }}" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow stats-card primary">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Tổng doanh thu</h6>
+                    <h3 class="mb-0 text-primary">{{ total_revenue|floatformat:0 }}₫</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-0 shadow stats-card success">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Tổng đơn hàng</h6>
+                    <h3 class="mb-0 text-success">{{ total_orders }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-0 shadow stats-card warning">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Giá trị TB/đơn</h6>
+                    <h3 class="mb-0 text-warning">{{ avg_order_value|floatformat:0 }}₫</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Revenue by Category -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Doanh thu theo danh mục</h5>
+                </div>
+                <div class="card-body">
+                    {% if revenue_by_category %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Danh mục</th>
+                                    <th class="text-end">Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in revenue_by_category %}
+                                <tr>
+                                    <td>{{ item.category }}</td>
+                                    <td class="text-end"><strong>{{ item.revenue|floatformat:0 }}₫</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted py-4">Không có dữ liệu</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Products -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Top 10 sản phẩm bán chạy</h5>
+                </div>
+                <div class="card-body">
+                    {% if top_products %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-end">Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in top_products %}
+                                <tr>
+                                    <td>{{ product.name|truncatewords:10 }}</td>
+                                    <td class="text-end"><strong>{{ product.revenue|floatformat:0 }}₫</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted py-4">Không có dữ liệu</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>Ghi chú:</strong> Báo cáo chỉ tính các đơn hàng đã thanh toán. Click "Export CSV" để tải xuống báo cáo chi tiết.
+    </div>
+</div>
+{% endblock %}

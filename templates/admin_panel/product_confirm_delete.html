@@ -1,0 +1,60 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Xác nhận xóa sản phẩm
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle"></i>
+                        Bạn có chắc chắn muốn xóa sản phẩm này?
+                    </div>
+                    
+                    <div class="mb-4">
+                        {% if product.images.first %}
+                        <div class="text-center mb-3">
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" style="max-width: 200px;" class="img-thumbnail">
+                        </div>
+                        {% endif %}
+                        
+                        <h6>Thông tin sản phẩm:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Tên:</strong> {{ product.name }}</li>
+                            <li><strong>SKU:</strong> {{ product.sku }}</li>
+                            <li><strong>Giá:</strong> {{ product.price|floatformat:0 }}₫</li>
+                            <li><strong>Danh mục:</strong> {{ product.category.name }}</li>
+                            {% if product.brand %}
+                            <li><strong>Thương hiệu:</strong> {{ product.brand.name }}</li>
+                            {% endif %}
+                            <li><strong>Đã bán:</strong> {{ product.sold_count }}</li>
+                            <li><strong>Tồn kho:</strong> {{ product.stock }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác!
+                    </div>
+                    
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Xác nhận xóa
+                        </button>
+                        <a href="{% url 'admin_panel:products_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x"></i> Hủy
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

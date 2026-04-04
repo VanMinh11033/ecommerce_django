@@ -1,0 +1,192 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Chi tiết sản phẩm</h1>
+        <div>
+            <a href="{% url 'admin_panel:product_edit' product.id %}" class="btn btn-primary me-2">
+                <i class="bi bi-pencil"></i> Chỉnh sửa
+            </a>
+            <a href="{% url 'admin_panel:products_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Product Info -->
+        <div class="col-md-8">
+            <!-- Images -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Hình ảnh sản phẩm</h5>
+                </div>
+                <div class="card-body">
+                    {% if product.images.all %}
+                    <div class="row g-3">
+                        {% for image in product.images.all %}
+                        <div class="col-md-3">
+                            <div class="position-relative">
+                                <img src="{{ image.image.url }}" alt="{{ product.name }}" class="img-thumbnail w-100">
+                                {% if image.is_primary %}
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Ảnh chính</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-image" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Chưa có hình ảnh</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Basic Info -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thông tin cơ bản</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="mb-3">{{ product.name }}</h3>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>SKU:</strong> <code>{{ product.sku }}</code></p>
+                            <p class="mb-2"><strong>Slug:</strong> <code>{{ product.slug }}</code></p>
+                            <p class="mb-2"><strong>Danh mục:</strong> {{ product.category.name }}</p>
+                            {% if product.brand %}
+                            <p class="mb-2"><strong>Thương hiệu:</strong> {{ product.brand.name }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Giá bán:</strong> <span class="text-primary fs-5">{{ product.price|floatformat:0 }}₫</span></p>
+                            {% if product.compare_price %}
+                            <p class="mb-2"><strong>Giá gốc:</strong> <span class="text-muted text-decoration-line-through">{{ product.compare_price|floatformat:0 }}₫</span></p>
+                            <p class="mb-2"><strong>Giảm giá:</strong> <span class="badge bg-danger">-{{ product.discount_percentage }}%</span></p>
+                            {% endif %}
+                            <p class="mb-2"><strong>Tồn kho:</strong> {{ product.stock }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <strong>Mô tả:</strong>
+                        <p class="mt-2">{{ product.description|linebreaks }}</p>
+                    </div>
+                    
+                    {% if product.specifications %}
+                    <hr>
+                    <div>
+                        <strong>Thông số kỹ thuật:</strong>
+                        <div class="mt-2">
+                            <pre class="bg-light p-3 rounded"><code>{{ product.specifications }}</code></pre>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Reviews -->
+            {% if product.reviews.all %}
+            <div class="card border-0 shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Đánh giá ({{ product.reviews.count }})</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for review in product.reviews.all|slice:":5" %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ review.user.get_full_name|default:review.user.username }}</strong>
+                            <div>
+                                {% for i in "12345" %}
+                                <i class="bi bi-star{% if forloop.counter <= review.rating %}-fill text-warning{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="mb-1 mt-2">{{ review.comment }}</p>
+                        <small class="text-muted">{{ review.created_at|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Status -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Trạng thái</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" {% if product.is_active %}checked{% endif %} disabled>
+                        <label class="form-check-label">Hiển thị sản phẩm</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" {% if product.is_featured %}checked{% endif %} disabled>
+                        <label class="form-check-label">Sản phẩm nổi bật</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" {% if product.is_bestseller %}checked{% endif %} disabled>
+                        <label class="form-check-label">Sản phẩm bán chạy</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" {% if product.is_new %}checked{% endif %} disabled>
+                        <label class="form-check-label">Sản phẩm mới</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Thống kê</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Lượt xem:</span>
+                        <strong>{{ product.view_count }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Đã bán:</span>
+                        <strong class="text-success">{{ product.sold_count }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Đánh giá:</span>
+                        <strong>{{ product.rating_average|default:"0.0" }}/5 ({{ product.review_count }})</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Tạo lúc:</span>
+                        <strong>{{ product.created_at|date:"d/m/Y" }}</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <a href="{% url 'products:detail' product.slug %}" target="_blank" class="btn btn-info w-100 mb-2">
+                        <i class="bi bi-eye"></i> Xem trên website
+                    </a>
+                    <a href="{% url 'admin_panel:product_toggle_active' product.id %}" 
+                       class="btn btn-warning w-100 mb-2"
+                       onclick="return confirm('Thay đổi trạng thái hiển thị?')">
+                        <i class="bi bi-{% if product.is_active %}eye-slash{% else %}eye{% endif %}"></i>
+                        {% if product.is_active %}Ẩn sản phẩm{% else %}Hiện sản phẩm{% endif %}
+                    </a>
+                    <a href="{% url 'admin_panel:product_delete' product.id %}" class="btn btn-danger w-100">
+                        <i class="bi bi-trash"></i> Xóa sản phẩm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

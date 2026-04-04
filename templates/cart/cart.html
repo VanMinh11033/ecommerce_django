@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Giỏ hàng - TechStore{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-4xl font-bold gradient-text mb-8" data-aos="fade-down">Giỏ hàng của bạn</h1>
+    
+    {% if cart_items %}
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2 space-y-4" data-aos="fade-right">
+            {% for item in cart_items %}
+            <div class="glass dark:glass-dark rounded-2xl p-6 hover:shadow-xl transition-shadow">
+                <div class="flex gap-6">
+                    <!-- Image -->
+                    <div class="w-32 h-32 flex-shrink-0">
+                        {% if item.product.images.first %}
+                        <img src="{{ item.product.images.first.image.url }}" 
+                             alt="{{ item.product.name }}"
+                             class="w-full h-full object-cover rounded-xl">
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-xl flex items-center justify-center">
+                            <i class="bi bi-image text-4xl text-gray-400"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Info -->
+                    <div class="flex-1">
+                        <div class="flex justify-between mb-2">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">
+                                    <a href="{% url 'products:detail' item.product.slug %}" class="hover:text-blue-500 transition-colors">
+                                        {{ item.product.name }}
+                                    </a>
+                                </h3>
+                                {% if item.product.brand %}
+                                <p class="text-sm text-gray-500">{{ item.product.brand.name }}</p>
+                                {% endif %}
+                            </div>
+                            <form method="post" action="{% url 'cart:remove' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="text-red-500 hover:text-red-600 transition-colors">
+                                    <i class="bi bi-trash text-xl"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <p class="text-2xl font-bold text-blue-600 mb-4">{{ item.product.price|floatformat:0 }}₫</p>
+                        
+                        <!-- Quantity -->
+                        <div class="flex items-center justify-between">
+                            <form method="post" action="{% url 'cart:update' item.id %}" class="flex items-center border-2 border-gray-200 dark:border-gray-700 rounded-lg">
+                                {% csrf_token %}
+                                <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" 
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="px-6 py-2 font-bold border-x-2 border-gray-200 dark:border-gray-700">{{ item.quantity }}</span>
+                                <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" 
+                                        class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </form>
+                            
+                            <div class="text-right">
+                                <p class="text-sm text-gray-500">Tổng</p>
+                                <p class="text-xl font-bold">{{ item.total_price|floatformat:0 }}₫</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="lg:col-span-1" data-aos="fade-left">
+            <div class="glass dark:glass-dark rounded-2xl p-6 sticky top-24">
+                <h2 class="text-2xl font-bold mb-6">Tóm tắt đơn hàng</h2>
+                
+                <div class="space-y-4 mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-400">Tạm tính:</span>
+                        <span class="font-bold">{{ cart.subtotal|floatformat:0 }}₫</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-400">Phí vận chuyển:</span>
+                        <span class="font-bold">30.000₫</span>
+                    </div>
+                    <hr class="border-gray-300 dark:border-gray-700">
+                    <div class="flex justify-between text-xl">
+                        <span class="font-bold">Tổng cộng:</span>
+                        <span class="font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            {{ cart.subtotal|add:"30000"|floatformat:0 }}₫
+                        </span>
+                    </div>
+                </div>
+                
+                <a href="{% url 'orders:checkout' %}" 
+                   class="block w-full px-6 py-4 btn-gradient text-white text-center rounded-xl font-bold text-lg mb-3">
+                    Tiến hành thanh toán
+                    <i class="bi bi-arrow-right ml-2"></i>
+                </a>
+                
+                <a href="{% url 'products:list' %}" 
+                   class="block w-full px-6 py-3 border-2 border-gray-200 dark:border-gray-700 text-center rounded-xl font-medium hover:border-blue-500 hover:text-blue-500 transition-colors">
+                    Tiếp tục mua hàng
+                </a>
+                
+                <!-- Features -->
+                <div class="mt-6 pt-6 border-t border-gray-300 dark:border-gray-700 space-y-3 text-sm">
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="bi bi-shield-check text-green-500 mr-2"></i>
+                        <span>Bảo hành chính hãng</span>
+                    </div>
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="bi bi-truck text-blue-500 mr-2"></i>
+                        <span>Miễn phí vận chuyển</span>
+                    </div>
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="bi bi-arrow-clockwise text-purple-500 mr-2"></i>
+                        <span>Đổi trả trong 7 ngày</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-20" data-aos="zoom-in">
+        <div class="glass dark:glass-dark rounded-2xl p-12 inline-block">
+            <i class="bi bi-cart-x text-9xl text-gray-400 mb-6 block"></i>
+            <h3 class="text-3xl font-bold mb-4">Giỏ hàng trống</h3>
+            <p class="text-gray-500 mb-8 text-lg">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+            <a href="{% url 'products:list' %}" 
+               class="inline-block px-8 py-4 btn-gradient text-white rounded-xl font-bold text-lg">
+                <i class="bi bi-bag-plus mr-2"></i>
+                Khám phá sản phẩm
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
