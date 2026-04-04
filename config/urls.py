@@ -4,15 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from products.views import home_view
 
-# 🔥 THÊM ĐOẠN NÀY
-from django.contrib.auth.models import User
-
-try:
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@gmail.com', '123456')
-except:
-    pass
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
@@ -27,3 +18,11 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
+
+
+
+
+
