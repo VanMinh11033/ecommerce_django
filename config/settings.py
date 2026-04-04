@@ -131,12 +131,3 @@ VNPAY_TMN_CODE = 'YOUR_TMN_CODE'
 VNPAY_HASH_SECRET = 'YOUR_HASH_SECRET'
 VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
 VNPAY_RETURN_URL = 'http://localhost:8000/payments/vnpay-return/'
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-try:
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@gmail.com', '123456')
-except:
-    pass
