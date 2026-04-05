@@ -15,9 +15,15 @@ urlpatterns = [
     path('dashboard/', include('admin_panel.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Phục vụ media và static files cả khi DEBUG=False.
+# Trên Render, nếu không có route này thì ảnh upload xong sẽ không truy cập được.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Nếu muốn giữ điều kiện DEBUG cũ, uncomment phần dưới và comment lại phần trên.
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 
