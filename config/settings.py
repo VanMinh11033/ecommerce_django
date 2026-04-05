@@ -4,14 +4,16 @@ Django settings for ecommerce project.
 
 from pathlib import Path
 import os
+import dj_database_url
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-your-secret-key-change-this-in-production'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,11 +68,11 @@ TEMPLATES = [
     },
 ]
 
-import dj_database_url
+
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        'postgresql://ecommerce_db_fusw_user:uMUF8CpzC00BblOlUVpahogLycOwigH8@dpg-d78v3eogjchc73f9mdcg-a.virginia-postgres.render.com/ecommerce_db_fusw'
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
     )
 }
 
@@ -128,4 +130,4 @@ CART_SESSION_ID = 'cart'
 VNPAY_TMN_CODE = 'YOUR_TMN_CODE'
 VNPAY_HASH_SECRET = 'YOUR_HASH_SECRET'
 VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-VNPAY_RETURN_URL = 'http://localhost:8000/payments/vnpay-return/'
+VNPAY_RETURN_URL = 'https://your-app.onrender.com/payments/vnpay-return/'
