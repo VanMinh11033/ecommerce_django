@@ -66,14 +66,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+import dj_database_url
 
-# Database - MySQL
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        'postgresql://ecommerce_db_fusw_user:uMUF8CpzC00BblOlUVpahogLycOwigH8@dpg-d78v3eogjchc73f9mdcg-a.virginia-postgres.render.com/ecommerce_db_fusw'
+    )
 }
 
 # Password validation
